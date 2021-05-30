@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorator="layout.html">
+<head>
+<meta charset="ISO-8859-1">
+<title>Patients Management</title>
+
+</head>
+<body>
+
+	<div layout:fragment="pageContent">
+		<div class="container mt-5">
+			<div class="card">
+				<div class="card-header">Patients List:</div>
+				<div class="card-body">
+					<form method="get" th:action="@{list}">
+						<div class="form-group">
+							<label>Name: </label> <input type="text" name="keyword"
+								th:value="${keyword}">
+							<button class="btn btn-success">Search</button>
+						</div>
+						<br>
+					</form>
+					<table class="table">
+						<tr>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Birth</th>
+							<th>Sick</th>
+							<th>Actions</th>
+						</tr>
+
+						<tr th:each="p:${patients}">
+							<td th:text="${p.id}"></td>
+							<td th:text="${p.name}"></td>
+							<td th:text="${p.birthDate}"></td>
+							<td th:text="${p.sick}"></td>
+							<td><a onclick="return confirm('Are You Sure?')"
+								class="btn btn-danger"
+								th:href="@{deletePatient(id=${p.id},keyword=${keyword},page=${currentPage},size=${size})}">Delete</a>
+								<a class="btn btn-warning" th:href="@{editPatient(id=${p.id})}"
+								sec:authorize="hasRole('ROLE_ADMIN')">Edit</a></td>
+						</tr>
+					</table>
+
+					<ul class="nav nav-pills">
+						<li th:each="page,status:${pages}"><a
+							th:class="${status.index==currentPage?'btn btn-primary':'btn'}"
+							th:href="@{list(page=${status.index},keyword=${keyword},size=${size})}"
+							th:text="${status.count}"></a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</body>
+</html>
